@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>4일 근력 프로그램</title>
+
+<!-- 홈 화면에 추가 시 아이콘/이름/전체화면(주소창 없음) 앱처럼 동작하도록 하는 설정 -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="근력프로그램">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#b3491f">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAACkElEQVR4nO3dW24TMQBA0Raxj7KdInZbxHpYCh9IVUVyiz3Ejoie85t2mthXzmQe6ePL89MDXPPp3k+A8xIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRykz8d+7duPn/XQ969fjm2Tf3fbeTmycrzzDP76KOvcfF6m4xj5G/rYb8W8zMUxvnV97LRoXibimJ1vfeyxbl58WiGJgyQOkjhI4iCJgyQOkjhI4iCJg3TwlP1hV4/dOst/1d3HauvKUUf1nYW5dIax2heHq0DGnWSsNsXhKpBx5xkrO6QkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIH6fHl+WnwR9109N8YvOHWykESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB2nt11u/nhoePN3ve64f5sdq3aUUVg6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDtCmOkbuV3NH023nGat/K8f7rUcZbJxmrrW8r9aqUcekMY7X2XtlLOhh397GyQ0oSB0kcJHGQxEESB0kcJHGQxEESB2kijtmjuXc/+vtBrJuXuZVjfLvK2GnRvEy/rZznagPeWjEvR/Y5TnK1AX+4+bxM/EdqPhqfVkjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIP0C1nly+8zhAwcAAAAASUVORK5CYII=">
+<style>
+:root{
+  --bg:#f1efe9; --card:#ffffff; --text:#201e1a; --sub:#78726a;
+  --border:#e2ded4; --accent:#b3491f; --accent-weak:#f4ddce;
+  --danger:#9f1d34; --ok:#2f6b52;
+  --c-main:#b3491f; --c-secondary:#2f6b5e; --c-accessory:#7a746a; --c-deload:#3b5a73; --c-test:#9f1d34;
+}
+:root[data-theme="dark"]{
+  --bg:#171512; --card:#221f1b; --text:#f1ede6; --sub:#a39c8f;
+  --border:#332e27; --accent:#e2793f; --accent-weak:#3c2417;
+  --danger:#f0697e; --ok:#5fae8b;
+  --c-main:#e2793f; --c-secondary:#4f9484; --c-accessory:#948d80; --c-deload:#6d94ad; --c-test:#f0697e;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#171512; --card:#221f1b; --text:#f1ede6; --sub:#a39c8f;
+    --border:#332e27; --accent:#e2793f; --accent-weak:#3c2417;
+    --danger:#f0697e; --ok:#5fae8b;
+    --c-main:#e2793f; --c-secondary:#4f9484; --c-accessory:#948d80; --c-deload:#6d94ad; --c-test:#f0697e;
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  padding-bottom:calc(40px + env(safe-area-inset-bottom));
+}
+header{
+  position:sticky; top:0; z-index:10; background:var(--bg);
+  padding:calc(14px + env(safe-area-inset-top)) 16px 8px;
+  border-bottom:1px solid var(--border);
+}
+h1{font-size:18px; margin:0 0 10px; display:flex; align-items:center; justify-content:space-between;}
+.gear{background:none;border:none;color:var(--sub);font-size:20px;padding:4px;cursor:pointer;}
+.seg{display:flex; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:3px; gap:3px;}
+.seg button{flex:1; border:none; background:none; padding:8px 0; border-radius:8px; font-size:14px; color:var(--sub); cursor:pointer;}
+.seg button.active{background:var(--accent); color:#fff; font-weight:600;}
+.tabs{display:flex; gap:6px; overflow-x:auto; padding:10px 16px 0; -webkit-overflow-scrolling:touch;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:0 0 auto; padding:7px 14px; border-radius:20px; background:var(--card); border:1px solid var(--border); font-size:13px; color:var(--sub); white-space:nowrap; cursor:pointer;}
+.tab.active{background:var(--accent-weak); color:var(--accent); border-color:var(--accent); font-weight:600;}
+main{padding:12px 16px;}
+.card{background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:12px;}
+.card-top{display:flex; align-items:center; gap:8px; margin-bottom:6px;}
+.badge{font-size:11px; padding:2px 8px; border-radius:20px; font-weight:600; color:#fff; letter-spacing:.2px;}
+.b-메인{background:var(--c-main);} .b-세컨더리{background:var(--c-secondary);} .b-보조{background:var(--c-accessory);}
+.b-디로드{background:var(--c-deload);} .b-테스트{background:var(--c-test);}
+.ex-name{font-size:16px; font-weight:700; letter-spacing:-.01em; text-wrap:balance;}
+.meta{font-size:12.5px; color:var(--sub); margin-bottom:10px;}
+.target{display:flex; align-items:baseline; gap:6px; margin-bottom:10px;}
+.target .num{font-size:24px; font-weight:700; color:var(--accent); font-variant-numeric:tabular-nums;}
+.target .unit{font-size:13px; color:var(--sub);}
+.row{display:flex; gap:8px; margin-bottom:8px;}
+.field{flex:1;}
+.field label{display:block; font-size:11px; color:var(--sub); margin-bottom:3px;}
+input[type=number], input[type=text], textarea{
+  width:100%; border:1px solid var(--border); background:var(--bg); color:var(--text);
+  border-radius:8px; padding:9px 8px; font-size:15px; font-family:inherit; font-variant-numeric:tabular-nums;
+}
+input:focus, textarea:focus, button:focus-visible{outline:2px solid var(--accent); outline-offset:1px;}
+textarea{resize:none; min-height:38px;}
+.sets{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;}
+.setbox{width:52px;}
+.setbox label{display:block; font-size:10px; text-align:center; color:var(--sub); margin-bottom:3px;}
+.setbox input{text-align:center; padding:8px 2px;}
+.hint{font-size:11px; color:var(--sub); text-align:right; margin-top:2px;}
+.empty{text-align:center; color:var(--sub); font-size:14px; padding:40px 0;}
+
+.modal-bg{position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:flex-end; z-index:50;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--card); width:100%; max-height:88vh; overflow-y:auto; border-radius:16px 16px 0 0; padding:18px 16px 28px;}
+.modal h2{margin:0 0 14px; font-size:17px;}
+.modal-close{float:right; background:none; border:none; font-size:18px; color:var(--sub);}
+.rm-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;}
+.rm-field label{display:block; font-size:12px; color:var(--sub); margin-bottom:4px;}
+.section-title{font-size:13px; font-weight:700; color:var(--sub); margin:18px 0 8px; text-transform:uppercase; letter-spacing:.3px;}
+.btn{display:block; width:100%; text-align:center; padding:11px; border-radius:10px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:14px; margin-bottom:8px; cursor:pointer;}
+.btn.primary{background:var(--accent); color:#fff; border-color:var(--accent); font-weight:600;}
+.btn.danger{color:var(--danger); border-color:var(--danger);}
+.toast{position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--text); color:var(--bg); padding:8px 16px; border-radius:20px; font-size:13px; opacity:0; transition:opacity .25s; pointer-events:none; z-index:60;}
+.toast.show{opacity:.92;}
+input[type=file]{display:none;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>4일 근력 프로그램 <button class="gear" onclick="openSettings()">⚙</button></h1>
+  <div class="seg">
+    <button id="blockInit" onclick="setBlock('initial')">1블록 (초기1RM)</button>
+    <button id="blockRetest" onclick="setBlock('retest')">2블록 (재측정1RM)</button>
+  </div>
+</header>
+
+<div class="tabs" id="weekTabs"></div>
+<div class="tabs" id="dayTabs"></div>
+
+<main id="content"></main>
+
+<div class="modal-bg" id="settingsModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeSettings()">✕</button>
+    <h2>설정</h2>
+
+    <div class="section-title">초기1RM (1블록 기준)</div>
+    <div class="rm-grid">
+      <div class="rm-field"><label>Back Squat (kg)</label><input type="number" step="0.5" id="rm_initial_backSquat"></div>
+      <div class="rm-field"><label>Bench Press (kg)</label><input type="number" step="0.5" id="rm_initial_benchPress"></div>
+      <div class="rm-field"><label>Deadlift (kg)</label><input type="number" step="0.5" id="rm_initial_deadlift"></div>
+      <div class="rm-field"><label>Overhead Press (kg)</label><input type="number" step="0.5" id="rm_initial_overheadPress"></div>
+    </div>
+    <div class="rm-field" style="margin-bottom:14px;"><label>반올림 단위 (kg)</label><input type="number" step="0.5" id="rm_initial_roundUnit"></div>
+
+    <div class="section-title">재측정1RM (2블록 기준)</div>
+    <div class="rm-grid">
+      <div class="rm-field"><label>Back Squat (kg)</label><input type="number" step="0.5" id="rm_retest_backSquat"></div>
+      <div class="rm-field"><label>Bench Press (kg)</label><input type="number" step="0.5" id="rm_retest_benchPress"></div>
+      <div class="rm-field"><label>Deadlift (kg)</label><input type="number" step="0.5" id="rm_retest_deadlift"></div>
+      <div class="rm-field"><label>Overhead Press (kg)</label><input type="number" step="0.5" id="rm_retest_overheadPress"></div>
+    </div>
+    <div class="rm-field" style="margin-bottom:14px;"><label>반올림 단위 (kg)</label><input type="number" step="0.5" id="rm_retest_roundUnit"></div>
+
+    <button class="btn primary" onclick="saveRM()">저장</button>
+
+    <div class="section-title">데이터 백업</div>
+    <button class="btn" onclick="exportData()">내보내기 (JSON 다운로드)</button>
+    <button class="btn" onclick="document.getElementById('importFile').click()">가져오기</button>
+    <input type="file" id="importFile" accept="application/json" onchange="importData(event)">
+
+    <div class="section-title">초기화</div>
+    <button class="btn danger" onclick="resetAll()">모든 기록 삭제</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ---- 프로그램 데이터 (엑셀 1블록_프로그램 / 2블록_프로그램 시트 기준, 두 블록 동일 구조) ----
+const PROGRAM = [
+{week:1,day:"Day 1",category:"메인",exercise:"Back Squat",refLift:"backSquat",sets:5,reps:"4",pct:0.775},
+{week:1,day:"Day 1",category:"메인",exercise:"Bench Press",refLift:"benchPress",sets:5,reps:"5",pct:0.725},
+{week:1,day:"Day 1",category:"보조",exercise:"Pull-up",refLift:null,sets:4,reps:"6-10",pct:null},
+{week:1,day:"Day 1",category:"보조",exercise:"Cable Pushdown",refLift:null,sets:3,reps:"10-15",pct:null},
+{week:1,day:"Day 2",category:"메인",exercise:"Overhead Press",refLift:"overheadPress",sets:5,reps:"4",pct:0.75},
+{week:1,day:"Day 2",category:"세컨더리",exercise:"Paused Deadlift",refLift:"deadlift",sets:4,reps:"4",pct:0.675},
+{week:1,day:"Day 2",category:"보조",exercise:"Dips",refLift:null,sets:3,reps:"6-10",pct:null},
+{week:1,day:"Day 2",category:"보조",exercise:"Incline Dumbbell Curl",refLift:null,sets:3,reps:"10-15",pct:null},
+{week:1,day:"Day 3",category:"메인",exercise:"Bench Press",refLift:"benchPress",sets:5,reps:"3",pct:0.8},
+{week:1,day:"Day 3",category:"메인",exercise:"Deadlift",refLift:"deadlift",sets:4,reps:"3",pct:0.8},
+{week:1,day:"Day 3",category:"보조",exercise:"Seated Cable Row",refLift:null,sets:4,reps:"8-12",pct:null},
+{week:1,day:"Day 3",category:"보조",exercise:"Cable Pushdown",refLift:null,sets:3,reps:"10-15",pct:null},
+{week:1,day:"Day 4",category:"메인",exercise:"Back Squat",refLift:"backSquat",sets:4,reps:"5",pct:0.7},
+{week:1,day:"Day 4",category:"메인",exercise:"Overhead Press",refLift:"overheadPress",sets:4,reps:"6",pct:0.675},
+{week:1,day:"Day 4",category:"보조",exercise:"Lat Pulldown",refLift:null,sets:4,reps:"8-12",pct:null},
+{week:1,day:"Day 4",category:"보조",exercise:"Incline Dumbbell Curl",refLift:null,sets:3,reps:"10-15",pct:null},
+
+{week:2,day:"Day 1",category:"메인",exercise:"Back Squat",refLift:"backSquat",sets:5,reps:"4",pct:0.8},
+{week:2,day:"Day 1",category:"메인",exercise:"Bench Press",refLift:"benchPress",sets:5,reps:"5",pct:0.75},
+{week:2,day:"Day 1",category:"보조",exercise:"Pull-up",refLift:null,sets:4,reps:"6-10",pct:null},
+{week:2,day:"Day 1",category:"보조",exercise:"Cable Pushdown",refLift:null,sets:3,reps:"10-15",pct:null},
+{week:2,day:"Day 2",category:"메인",exercise:"Overhead Press",refLift:"overheadPress",sets:5,reps:"4",pct:0.775},
+{week:2,day:"Day 2",category:"세컨더리",exercise:"Paused Deadlift",refLift:"deadlift",sets:4,reps:"4",pct:0.7},
+{week:2,day:"Day 2",category:"보조",exercise:"Dips",refLift:null,sets:3,reps:"6-10",pct:null},
+{week:2,day:"Day 2",category:"보조",exercise:"Incline Dumbbell Curl",refLift:null,sets:3,reps:"10-15",pct:null},
+{week:2,day:"Day 3",category:"메인",exercise:"Bench Press",refLift:"benchPress",sets:5,reps:"3",pct:0.825},
+{week:2,day:"Day 3",category:"메인",exercise:"Deadlift",refLift:"deadlift",sets:4,reps:"3",pct:0.825},
+{week:2,day:"Day 3",category:"보조",exercise:"Seated Cable Row",refLift:null,sets:4,reps:"8-12",pct:null},
+{week:2,day:"Day 3",category:"보조",exercise:"Cable Pushdown",refLift:null,sets:3,reps:"10-15",pct:null},
+{week:2,day:"Day 4",category:"메인",exercise:"Back Squat",refLift:"backSquat",sets:4,reps:"5",pct:0.725},
+{week:2,day:"Day 4",category:"메인",exercise:"Overhead Press",refLift:"overheadPress",sets:4,reps:"6",pct:0.7},
+{week:2,day:"Day 4",category:"보조",exercise:"Lat Pulldown",refLift:null,sets:4,reps:"8-12",pct:null},
+{week:2,day:"Day 4",category:"보조",exercise:"Incline Dumbbell Curl",refLift:null,sets:3,reps:"10-15",pct:null},
+
+{week:3,day:"Day 1",category:"메인",exercise:"Back Squat",refLift:"backSquat",sets:5,reps:"3",pct:0.84},
+{week:3,day:"Day 1",category:"메인",exercise:"Bench Press",refLift:"benchPress",sets:5,reps:"4",pct:0.775},
+{week:3,day:"Day 1",category:"보조",exercise:"Pull-up",refLift:null,sets:3,reps:"6-8",pct:null},
+{week:3,day:"Day 1",category:"보조",exercise:"Cable Pushdown",refLift:null,sets:3,reps:"10-15",pct:null},
+{week:3,day:"Day 2",category:"메인",exercise:"Overhead Press",refLift:"overheadPress",sets:5,reps:"3",pct:0.8},
+{week:3,day:"Day 2",category:"세컨더리",exercise:"Paused Deadlift",refLift:"deadlift",sets:4,reps:"3",pct:0.725},
+{week:3,day:"Day 2",category:"보조",exercise:"Dips",refLift:null,sets:3,reps:"6-8",pct:null},
+{week:3,day:"Day 2",category:"보조",exercise:"Incline Dumbbell Curl",refLift:null,sets:3,reps:"10-12",pct:null},
+{week:3,day:"Day 3",category:"메인",exercise:"Bench Press",refLift:"benchPress",sets:5,reps:"2",pct:0.86},
+{week:3,day:"Day 3",category:"메인",exercise:"Deadlift",refLift:"deadlift",sets:4,reps:"2",pct:0.86},
+{week:3,day:"Day 3",category:"보조",exercise:"Seated Cable Row",refLift:null,sets:4,reps:"8-10",pct:null},
+{week:3,day:"Day 3",category:"보조",exercise:"Cable Pushdown",refLift:null,sets:3,reps:"10-12",pct:null},
+{week:3,day:"Day 4",category:"메인",exercise:"Back Squat",refLift:"backSquat",sets:4,reps:"4",pct:0.75},
+{week:3,day:"Day 4",category:"메인",exercise:"Overhead Press",refLift:"overheadPress",sets:4,reps:"5",pct:0.725},
+{week:3,day:"Day 4",category:"보조",exercise:"Lat Pulldown",refLift:null,sets:4,reps:"8-10",pct:null},
+{week:3,day:"Day 4",category:"보조",exercise:"Incline Dumbbell Curl",refLift:null,sets:3,reps:"10-12",pct:null},
+
+{week:4,day:"Day 1",category:"디로드",exercise:"Back Squat",refLift:"backSquat",sets:3,reps:"3",pct:0.6},
+{week:4,day:"Day 1",category:"디로드",exercise:"Bench Press",refLift:"benchPress",sets:3,reps:"3",pct:0.6},
+{week:4,day:"Day 1",category:"보조",exercise:"Pull-up",refLift:null,sets:2,reps:"6-8",pct:null},
+{week:4,day:"Day 1",category:"보조",exercise:"Cable Pushdown",refLift:null,sets:2,reps:"12-15",pct:null},
+{week:4,day:"Day 2",category:"디로드",exercise:"Overhead Press",refLift:"overheadPress",sets:3,reps:"3",pct:0.6},
+{week:4,day:"Day 2",category:"디로드",exercise:"Paused Deadlift",refLift:"deadlift",sets:3,reps:"2",pct:0.55},
+{week:4,day:"Day 2",category:"보조",exercise:"Dips",refLift:null,sets:2,reps:"6-8",pct:null},
+{week:4,day:"Day 2",category:"보조",exercise:"Incline Dumbbell Curl",refLift:null,sets:2,reps:"12-15",pct:null},
+{week:4,day:"Day 3",category:"테스트",exercise:"Bench Press Test Attempt 1",refLift:"benchPress",sets:1,reps:"1",pct:0.9},
+{week:4,day:"Day 3",category:"테스트",exercise:"Bench Press Test Attempt 2",refLift:"benchPress",sets:1,reps:"1",pct:0.97},
+{week:4,day:"Day 3",category:"테스트",exercise:"Bench Press Test Attempt 3",refLift:"benchPress",sets:1,reps:"1",pct:1.0},
+{week:4,day:"Day 3",category:"테스트",exercise:"Bench Press Test Attempt 4",refLift:"benchPress",sets:1,reps:"1",pct:1.03},
+{week:4,day:"Day 3",category:"테스트",exercise:"Back Squat Test Attempt 1",refLift:"backSquat",sets:1,reps:"1",pct:0.9},
+{week:4,day:"Day 3",category:"테스트",exercise:"Back Squat Test Attempt 2",refLift:"backSquat",sets:1,reps:"1",pct:0.97},
+{week:4,day:"Day 3",category:"테스트",exercise:"Back Squat Test Attempt 3",refLift:"backSquat",sets:1,reps:"1",pct:1.0},
+{week:4,day:"Day 3",category:"테스트",exercise:"Back Squat Test Attempt 4",refLift:"backSquat",sets:1,reps:"1",pct:1.03},
+{week:4,day:"Day 4",category:"테스트",exercise:"Overhead Press Test Attempt 1",refLift:"overheadPress",sets:1,reps:"1",pct:0.9},
+{week:4,day:"Day 4",category:"테스트",exercise:"Overhead Press Test Attempt 2",refLift:"overheadPress",sets:1,reps:"1",pct:0.97},
+{week:4,day:"Day 4",category:"테스트",exercise:"Overhead Press Test Attempt 3",refLift:"overheadPress",sets:1,reps:"1",pct:1.0},
+{week:4,day:"Day 4",category:"테스트",exercise:"Overhead Press Test Attempt 4",refLift:"overheadPress",sets:1,reps:"1",pct:1.03},
+{week:4,day:"Day 4",category:"테스트",exercise:"Deadlift Test Attempt 1",refLift:"deadlift",sets:1,reps:"1",pct:0.9},
+{week:4,day:"Day 4",category:"테스트",exercise:"Deadlift Test Attempt 2",refLift:"deadlift",sets:1,reps:"1",pct:0.97},
+{week:4,day:"Day 4",category:"테스트",exercise:"Deadlift Test Attempt 3",refLift:"deadlift",sets:1,reps:"1",pct:1.0},
+{week:4,day:"Day 4",category:"테스트",exercise:"Deadlift Test Attempt 4",refLift:"deadlift",sets:1,reps:"1",pct:1.03},
+];
+
+const LIFT_LABEL = {backSquat:"Back Squat", benchPress:"Bench Press", deadlift:"Deadlift", overheadPress:"Overhead Press"};
+const STORE_KEY = "strengthProgram_v1";
+
+function defaultStore(){
+  return {
+    oneRM:{
+      initial:{backSquat:100, benchPress:75, deadlift:120, overheadPress:50, roundUnit:2.5},
+      retest:{backSquat:100, benchPress:75, deadlift:120, overheadPress:50, roundUnit:2.5}
+    },
+    logs:{}
+  };
+}
+
+function loadStore(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(!raw) return defaultStore();
+    const parsed = JSON.parse(raw);
+    const def = defaultStore();
+    return {
+      oneRM:{initial:{...def.oneRM.initial, ...(parsed.oneRM&&parsed.oneRM.initial)}, retest:{...def.oneRM.retest, ...(parsed.oneRM&&parsed.oneRM.retest)}},
+      logs: (parsed.logs)||{}
+    };
+  }catch(e){ return defaultStore(); }
+}
+function saveStore(){ localStorage.setItem(STORE_KEY, JSON.stringify(store)); }
+
+let store = loadStore();
+let state = { block:"initial", week:1, day:"Day 1" };
+
+function setBlock(b){
+  state.block = b;
+  document.getElementById('blockInit').classList.toggle('active', b==='initial');
+  document.getElementById('blockRetest').classList.toggle('active', b==='retest');
+  render();
+}
+
+function buildTabs(){
+  const weekTabs = document.getElementById('weekTabs');
+  weekTabs.innerHTML = "";
+  for(let w=1; w<=4; w++){
+    const b = document.createElement('button');
+    b.className = 'tab' + (state.week===w?' active':'');
+    b.textContent = w+"주차" + (w===4?" (디로드/테스트)":"");
+    b.onclick = ()=>{ state.week=w; render(); };
+    weekTabs.appendChild(b);
+  }
+  const dayTabs = document.getElementById('dayTabs');
+  dayTabs.innerHTML = "";
+  ["Day 1","Day 2","Day 3","Day 4"].forEach(d=>{
+    const b = document.createElement('button');
+    b.className = 'tab' + (state.day===d?' active':'');
+    b.textContent = d;
+    b.onclick = ()=>{ state.day=d; render(); };
+    dayTabs.appendChild(b);
+  });
+}
+
+function logKey(item){
+  return state.block+"_w"+state.week+"_"+state.day+"_"+item.exercise;
+}
+
+function calcTarget(item){
+  if(!item.refLift) return null;
+  const rm = store.oneRM[state.block];
+  const oneRepMax = rm[item.refLift];
+  if(oneRepMax==null || oneRepMax==="") return null;
+  const exact = oneRepMax * item.pct;
+  const unit = rm.roundUnit || 2.5;
+  const rounded = Math.round(exact/unit)*unit;
+  return rounded;
+}
+
+function render(){
+  buildTabs();
+  const items = PROGRAM.filter(p=>p.week===state.week && p.day===state.day);
+  const content = document.getElementById('content');
+  content.innerHTML = "";
+  if(items.length===0){
+    content.innerHTML = '<div class="empty">해당 요일에 예정된 운동이 없습니다.</div>';
+    return;
+  }
+  items.forEach(item=>{
+    const key = logKey(item);
+    const log = store.logs[key] || {actualWeight:"", reps:[], note:""};
+    const target = calcTarget(item);
+
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    let html = `<div class="card-top">
+        <span class="badge b-${item.category}">${item.category}</span>
+        <span class="ex-name">${item.exercise}</span>
+      </div>`;
+
+    let metaParts = [`${item.sets}세트 × ${item.reps}회`];
+    if(item.pct) metaParts.push(`${Math.round(item.pct*1000)/10}%1RM`);
+    if(item.refLift) metaParts.push(`기준: ${LIFT_LABEL[item.refLift]}`);
+    html += `<div class="meta">${metaParts.join(' · ')}</div>`;
+
+    if(target!==null){
+      html += `<div class="target"><span class="num">${target}</span><span class="unit">kg 목표 (반올림)</span></div>`;
+    }
+
+    html += `<div class="row">
+        <div class="field">
+          <label>실제 중량 (kg)</label>
+          <input type="number" step="0.5" inputmode="decimal" value="${log.actualWeight??''}" placeholder="${target!==null?target:'중량 입력'}"
+            onchange="updateLog('${key}','actualWeight',this.value)">
+        </div>
+      </div>`;
+
+    html += `<div class="sets">`;
+    for(let s=0; s<item.sets; s++){
+      const val = log.reps && log.reps[s]!=null ? log.reps[s] : "";
+      html += `<div class="setbox">
+          <label>S${s+1}</label>
+          <input type="number" inputmode="numeric" value="${val}" placeholder="회"
+            onchange="updateRep('${key}',${s},this.value)">
+        </div>`;
+    }
+    html += `</div>`;
+
+    html += `<div class="field">
+        <label>메모</label>
+        <textarea placeholder="컨디션, 통증, 다음주 증량 여부 등" onchange="updateLog('${key}','note',this.value)">${log.note||''}</textarea>
+      </div>`;
+
+    card.innerHTML = html;
+    content.appendChild(card);
+  });
+}
+
+function updateLog(key, field, value){
+  if(!store.logs[key]) store.logs[key] = {actualWeight:"", reps:[], note:""};
+  store.logs[key][field] = value;
+  saveStore();
+  showToast('저장됨');
+}
+function updateRep(key, idx, value){
+  if(!store.logs[key]) store.logs[key] = {actualWeight:"", reps:[], note:""};
+  if(!store.logs[key].reps) store.logs[key].reps = [];
+  store.logs[key].reps[idx] = value;
+  saveStore();
+  showToast('저장됨');
+}
+
+let toastTimer=null;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 900);
+}
+
+function openSettings(){
+  const i = store.oneRM.initial, r = store.oneRM.retest;
+  document.getElementById('rm_initial_backSquat').value = i.backSquat;
+  document.getElementById('rm_initial_benchPress').value = i.benchPress;
+  document.getElementById('rm_initial_deadlift').value = i.deadlift;
+  document.getElementById('rm_initial_overheadPress').value = i.overheadPress;
+  document.getElementById('rm_initial_roundUnit').value = i.roundUnit;
+  document.getElementById('rm_retest_backSquat').value = r.backSquat;
+  document.getElementById('rm_retest_benchPress').value = r.benchPress;
+  document.getElementById('rm_retest_deadlift').value = r.deadlift;
+  document.getElementById('rm_retest_overheadPress').value = r.overheadPress;
+  document.getElementById('rm_retest_roundUnit').value = r.roundUnit;
+  document.getElementById('settingsModal').classList.add('open');
+}
+function closeSettings(){
+  document.getElementById('settingsModal').classList.remove('open');
+}
+function saveRM(){
+  store.oneRM.initial = {
+    backSquat: parseFloat(document.getElementById('rm_initial_backSquat').value)||0,
+    benchPress: parseFloat(document.getElementById('rm_initial_benchPress').value)||0,
+    deadlift: parseFloat(document.getElementById('rm_initial_deadlift').value)||0,
+    overheadPress: parseFloat(document.getElementById('rm_initial_overheadPress').value)||0,
+    roundUnit: parseFloat(document.getElementById('rm_initial_roundUnit').value)||2.5,
+  };
+  store.oneRM.retest = {
+    backSquat: parseFloat(document.getElementById('rm_retest_backSquat').value)||0,
+    benchPress: parseFloat(document.getElementById('rm_retest_benchPress').value)||0,
+    deadlift: parseFloat(document.getElementById('rm_retest_deadlift').value)||0,
+    overheadPress: parseFloat(document.getElementById('rm_retest_overheadPress').value)||0,
+    roundUnit: parseFloat(document.getElementById('rm_retest_roundUnit').value)||2.5,
+  };
+  saveStore();
+  closeSettings();
+  render();
+  showToast('1RM 저장됨');
+}
+
+function exportData(){
+  const blob = new Blob([JSON.stringify(store, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const d = new Date();
+  const stamp = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,'0')+"-"+String(d.getDate()).padStart(2,'0');
+  a.href = url;
+  a.download = `strength-program-backup-${stamp}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+function importData(evt){
+  const file = evt.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    try{
+      const parsed = JSON.parse(e.target.result);
+      if(!parsed.oneRM || !parsed.logs) throw new Error('invalid');
+      store = parsed;
+      saveStore();
+      openSettings();
+      render();
+      showToast('가져오기 완료');
+    }catch(err){
+      alert('올바른 백업 파일이 아닙니다.');
+    }
+  };
+  reader.readAsText(file);
+  evt.target.value = "";
+}
+
+function resetAll(){
+  if(!confirm('모든 입력 기록(실제중량, 반복수, 메모)이 삭제됩니다. 계속할까요?')) return;
+  store.logs = {};
+  saveStore();
+  closeSettings();
+  render();
+  showToast('초기화됨');
+}
+
+// init
+setBlock('initial');
+</script>
+</body>
+</html>
