@@ -233,6 +233,7 @@ const PROGRAM = [
 
 const LIFT_LABEL = {backSquat:"Back Squat", benchPress:"Bench Press", deadlift:"Deadlift", overheadPress:"Overhead Press"};
 const ACCESSORY_OPTIONS = ["Pull-up","Dips","Seated Cable Row","Lat Pulldown","Incline Dumbbell Curl","Dumbbell Curl","Cable Pushdown"];
+const ACCESSORY_SETS = 4;
 const STORE_KEY = "strengthProgram_v1";
 
 function defaultStore(){
@@ -242,7 +243,8 @@ function defaultStore(){
       retest:{backSquat:100, benchPress:75, deadlift:120, overheadPress:50, roundUnit:2.5}
     },
     logs:{},
-    sessions:{}
+    sessions:{},
+    exerciseHistory:{}
   };
 }
 
@@ -255,7 +257,8 @@ function loadStore(){
     return {
       oneRM:{initial:{...def.oneRM.initial, ...(parsed.oneRM&&parsed.oneRM.initial)}, retest:{...def.oneRM.retest, ...(parsed.oneRM&&parsed.oneRM.retest)}},
       logs: (parsed.logs)||{},
-      sessions: (parsed.sessions)||{}
+      sessions: (parsed.sessions)||{},
+      exerciseHistory: (parsed.exerciseHistory)||{}
     };
   }catch(e){ return defaultStore(); }
 }
@@ -344,15 +347,17 @@ function render(){
     if(isAccessory) accIndex++;
     const log = store.logs[key] || {actualWeight:"", reps:[], note:"", done:false};
     const target = calcTarget(item);
+    const sets = isAccessory ? ACCESSORY_SETS : item.sets;
 
     const card = document.createElement('div');
     card.className = 'card';
 
     let exNameHtml;
+    let effectiveExercise = item.exercise;
     if(isAccessory){
-      const selected = log.selectedExercise || item.exercise;
-      const opts = ACCESSORY_OPTIONS.map(o=>`<option value="${o}" ${o===selected?'selected':''}>${o}</option>`).join('');
-      exNameHtml = `<select class="ex-select" onchange="updateLog('${key}','selectedExercise',this.value)">${opts}</select>`;
+      effectiveExercise = log.selectedExercise || item.exercise;
+      const opts = ACCESSORY_OPTIONS.map(o=>`<option value="${o}" ${o===effectiveExercise?'selected':''}>${o}</option>`).join('');
+      exNameHtml = `<select class="ex-select" onchange="selectAccessory('${key}', this.value)">${opts}</select>`;
     }else{
       exNameHtml = `<span class="ex-name">${item.exercise}</span>`;
     }
@@ -361,12 +366,12 @@ function render(){
         <span class="badge b-${item.category}">${item.category}</span>
         ${exNameHtml}
         <label class="done-wrap">
-          <input type="checkbox" ${log.done?'checked':''} onclick="toggleDone('${key}', ${item.sets}, '${item.reps}', ${target===null?'null':target}, this.checked)">
+          <input type="checkbox" ${log.done?'checked':''} onclick="toggleDone('${key}', ${sets}, '${item.reps}', ${target===null?'null':target}, this.checked)">
           <span>완료</span>
         </label>
       </div>`;
 
-    let metaParts = [`${item.sets}세트 × ${item.reps}회`];
+    let metaParts = [`${sets}세트 × ${item.reps}회`];
     if(item.pct) metaParts.push(`${Math.round(item.pct*1000)/10}%1RM`);
     if(item.refLift) metaParts.push(`기준: ${LIFT_LABEL[item.refLift]}`);
     html += `<div class="meta">${metaParts.join(' · ')}</div>`;
@@ -375,21 +380,27 @@ function render(){
       html += `<div class="target"><span class="num">${target}</span><span class="unit">kg 목표 (반올림)</span></div>`;
     }
 
+    const weightOnchange = isAccessory
+      ? `updateAccessoryWeight('${key}','${effectiveExercise}',this.value)`
+      : `updateLog('${key}','actualWeight',this.value)`;
     html += `<div class="row">
         <div class="field">
           <label>실제 중량 (kg)</label>
           <input type="number" step="0.5" inputmode="decimal" value="${log.actualWeight??''}" placeholder="${target!==null?target:'중량 입력'}"
-            onchange="updateLog('${key}','actualWeight',this.value)">
+            onchange="${weightOnchange}">
         </div>
       </div>`;
 
     html += `<div class="sets">`;
-    for(let s=0; s<item.sets; s++){
+    for(let s=0; s<sets; s++){
       const val = log.reps && log.reps[s]!=null ? log.reps[s] : "";
+      const repOnchange = isAccessory
+        ? `updateAccessoryRep('${key}','${effectiveExercise}',${s},this.value)`
+        : `updateRep('${key}',${s},this.value)`;
       html += `<div class="setbox">
           <label>S${s+1}</label>
           <input type="number" inputmode="numeric" value="${val}" placeholder="회"
-            onchange="updateRep('${key}',${s},this.value)">
+            onchange="${repOnchange}">
         </div>`;
     }
     html += `</div>`;
@@ -421,6 +432,39 @@ function updateRep(key, idx, value){
   if(!store.logs[key]) store.logs[key] = {actualWeight:"", reps:[], note:"", done:false};
   if(!store.logs[key].reps) store.logs[key].reps = [];
   store.logs[key].reps[idx] = value;
+  saveStore();
+  showToast('저장됨');
+}
+function selectAccessory(key, exerciseName){
+  if(!store.logs[key]) store.logs[key] = {actualWeight:"", reps:[], note:"", done:false};
+  const log = store.logs[key];
+  log.selectedExercise = exerciseName;
+  const hist = store.exerciseHistory[exerciseName];
+  if(hist){
+    log.actualWeight = hist.actualWeight;
+    log.reps = (hist.reps||[]).slice();
+  }else{
+    log.actualWeight = "";
+    log.reps = [];
+  }
+  saveStore();
+  render();
+  showToast(hist?'이전 기록 불러옴':'새 종목 선택됨');
+}
+function updateAccessoryWeight(key, exerciseName, value){
+  if(!store.logs[key]) store.logs[key] = {actualWeight:"", reps:[], note:"", done:false, selectedExercise:exerciseName};
+  const log = store.logs[key];
+  log.actualWeight = value;
+  store.exerciseHistory[exerciseName] = {actualWeight: log.actualWeight, reps:(log.reps||[]).slice()};
+  saveStore();
+  showToast('저장됨');
+}
+function updateAccessoryRep(key, exerciseName, idx, value){
+  if(!store.logs[key]) store.logs[key] = {actualWeight:"", reps:[], note:"", done:false, selectedExercise:exerciseName};
+  const log = store.logs[key];
+  if(!log.reps) log.reps = [];
+  log.reps[idx] = value;
+  store.exerciseHistory[exerciseName] = {actualWeight: log.actualWeight, reps: log.reps.slice()};
   saveStore();
   showToast('저장됨');
 }
@@ -521,6 +565,7 @@ function importData(evt){
       if(!parsed.oneRM || !parsed.logs) throw new Error('invalid');
       store = parsed;
       if(!store.sessions) store.sessions = {};
+      if(!store.exerciseHistory) store.exerciseHistory = {};
       saveStore();
       openSettings();
       render();
@@ -536,6 +581,7 @@ function importData(evt){
 function resetAll(){
   if(!confirm('모든 입력 기록(실제중량, 반복수, 메모)이 삭제됩니다. 계속할까요?')) return;
   store.logs = {};
+  store.exerciseHistory = {};
   saveStore();
   closeSettings();
   render();
