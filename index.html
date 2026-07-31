@@ -60,6 +60,9 @@ main{padding:12px 16px;}
 .b-메인{background:var(--c-main);} .b-세컨더리{background:var(--c-secondary);} .b-보조{background:var(--c-accessory);}
 .b-디로드{background:var(--c-deload);} .b-테스트{background:var(--c-test);}
 .ex-name{font-size:16px; font-weight:700; letter-spacing:-.01em; text-wrap:balance;}
+.ex-select{font-size:15px; font-weight:700; letter-spacing:-.01em; border:1px solid var(--border); background:var(--card); color:var(--text); border-radius:8px; padding:5px 6px; font-family:inherit;}
+.done-wrap{margin-left:auto; display:flex; align-items:center; gap:4px; font-size:12px; color:var(--sub); white-space:nowrap;}
+.done-wrap input[type=checkbox]{width:18px; height:18px; accent-color:var(--accent); cursor:pointer;}
 .meta{font-size:12.5px; color:var(--sub); margin-bottom:10px;}
 .target{display:flex; align-items:baseline; gap:6px; margin-bottom:10px;}
 .target .num{font-size:24px; font-weight:700; color:var(--accent); font-variant-numeric:tabular-nums;}
@@ -229,6 +232,7 @@ const PROGRAM = [
 ];
 
 const LIFT_LABEL = {backSquat:"Back Squat", benchPress:"Bench Press", deadlift:"Deadlift", overheadPress:"Overhead Press"};
+const ACCESSORY_OPTIONS = ["Pull-up","Dips","Seated Cable Row","Lat Pulldown","Incline Dumbbell Curl","Dumbbell Curl","Cable Pushdown"];
 const STORE_KEY = "strengthProgram_v1";
 
 function defaultStore(){
@@ -237,7 +241,8 @@ function defaultStore(){
       initial:{backSquat:100, benchPress:75, deadlift:120, overheadPress:50, roundUnit:2.5},
       retest:{backSquat:100, benchPress:75, deadlift:120, overheadPress:50, roundUnit:2.5}
     },
-    logs:{}
+    logs:{},
+    sessions:{}
   };
 }
 
@@ -249,7 +254,8 @@ function loadStore(){
     const def = defaultStore();
     return {
       oneRM:{initial:{...def.oneRM.initial, ...(parsed.oneRM&&parsed.oneRM.initial)}, retest:{...def.oneRM.retest, ...(parsed.oneRM&&parsed.oneRM.retest)}},
-      logs: (parsed.logs)||{}
+      logs: (parsed.logs)||{},
+      sessions: (parsed.sessions)||{}
     };
   }catch(e){ return defaultStore(); }
 }
@@ -290,6 +296,10 @@ function logKey(item){
   return state.block+"_w"+state.week+"_"+state.day+"_"+item.exercise;
 }
 
+function sessionKey(){
+  return state.block+"_w"+state.week+"_"+state.day;
+}
+
 function calcTarget(item){
   if(!item.refLift) return null;
   const rm = store.oneRM[state.block];
@@ -301,6 +311,12 @@ function calcTarget(item){
   return rounded;
 }
 
+function parseRepsTarget(repsStr){
+  const nums = (String(repsStr).match(/\d+/g)||[]).map(Number);
+  if(nums.length===0) return null;
+  return Math.max(...nums);
+}
+
 function render(){
   buildTabs();
   const items = PROGRAM.filter(p=>p.week===state.week && p.day===state.day);
@@ -310,17 +326,44 @@ function render(){
     content.innerHTML = '<div class="empty">해당 요일에 예정된 운동이 없습니다.</div>';
     return;
   }
+
+  const sKey = sessionKey();
+  const session = store.sessions[sKey] || {date:""};
+  const dateCard = document.createElement('div');
+  dateCard.className = 'card';
+  dateCard.innerHTML = `<div class="field">
+      <label>운동 날짜</label>
+      <input type="date" value="${session.date||''}" onchange="updateSessionDate(this.value)">
+    </div>`;
+  content.appendChild(dateCard);
+
+  let accIndex = 0;
   items.forEach(item=>{
-    const key = logKey(item);
-    const log = store.logs[key] || {actualWeight:"", reps:[], note:""};
+    const isAccessory = item.category==='보조';
+    const key = isAccessory ? `${state.block}_w${state.week}_${state.day}_acc${accIndex}` : logKey(item);
+    if(isAccessory) accIndex++;
+    const log = store.logs[key] || {actualWeight:"", reps:[], note:"", done:false};
     const target = calcTarget(item);
 
     const card = document.createElement('div');
     card.className = 'card';
 
+    let exNameHtml;
+    if(isAccessory){
+      const selected = log.selectedExercise || item.exercise;
+      const opts = ACCESSORY_OPTIONS.map(o=>`<option value="${o}" ${o===selected?'selected':''}>${o}</option>`).join('');
+      exNameHtml = `<select class="ex-select" onchange="updateLog('${key}','selectedExercise',this.value)">${opts}</select>`;
+    }else{
+      exNameHtml = `<span class="ex-name">${item.exercise}</span>`;
+    }
+
     let html = `<div class="card-top">
         <span class="badge b-${item.category}">${item.category}</span>
-        <span class="ex-name">${item.exercise}</span>
+        ${exNameHtml}
+        <label class="done-wrap">
+          <input type="checkbox" ${log.done?'checked':''} onclick="toggleDone('${key}', ${item.sets}, '${item.reps}', ${target===null?'null':target}, this.checked)">
+          <span>완료</span>
+        </label>
       </div>`;
 
     let metaParts = [`${item.sets}세트 × ${item.reps}회`];
@@ -359,20 +402,55 @@ function render(){
     card.innerHTML = html;
     content.appendChild(card);
   });
+
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'btn primary';
+  saveBtn.style.marginTop = '4px';
+  saveBtn.textContent = '저장';
+  saveBtn.onclick = saveAll;
+  content.appendChild(saveBtn);
 }
 
 function updateLog(key, field, value){
-  if(!store.logs[key]) store.logs[key] = {actualWeight:"", reps:[], note:""};
+  if(!store.logs[key]) store.logs[key] = {actualWeight:"", reps:[], note:"", done:false};
   store.logs[key][field] = value;
   saveStore();
   showToast('저장됨');
 }
 function updateRep(key, idx, value){
-  if(!store.logs[key]) store.logs[key] = {actualWeight:"", reps:[], note:""};
+  if(!store.logs[key]) store.logs[key] = {actualWeight:"", reps:[], note:"", done:false};
   if(!store.logs[key].reps) store.logs[key].reps = [];
   store.logs[key].reps[idx] = value;
   saveStore();
   showToast('저장됨');
+}
+function toggleDone(key, sets, repsStr, target, checked){
+  if(!store.logs[key]) store.logs[key] = {actualWeight:"", reps:[], note:"", done:false};
+  const log = store.logs[key];
+  log.done = checked;
+  if(checked){
+    if(target!==null) log.actualWeight = String(target);
+    const repsTarget = parseRepsTarget(repsStr);
+    if(repsTarget!==null){
+      const arr = [];
+      for(let s=0; s<sets; s++) arr.push(repsTarget);
+      log.reps = arr;
+    }
+  }
+  saveStore();
+  render();
+  showToast(checked?'완료로 표시됨':'완료 해제됨');
+}
+function updateSessionDate(value){
+  const key = sessionKey();
+  if(!store.sessions[key]) store.sessions[key] = {date:""};
+  store.sessions[key].date = value;
+  saveStore();
+  showToast('저장됨');
+}
+function saveAll(){
+  saveStore();
+  showToast('저장 완료');
 }
 
 let toastTimer=null;
@@ -442,6 +520,7 @@ function importData(evt){
       const parsed = JSON.parse(e.target.result);
       if(!parsed.oneRM || !parsed.logs) throw new Error('invalid');
       store = parsed;
+      if(!store.sessions) store.sessions = {};
       saveStore();
       openSettings();
       render();
