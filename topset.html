@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>탑세트 근력 프로그램</title>
+
+<!-- 홈 화면에 추가 시 아이콘/이름/전체화면(주소창 없음) 앱처럼 동작하도록 하는 설정 -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="탑세트">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#b3491f">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAACkElEQVR4nO3dW24TMQBA0Raxj7KdInZbxHpYCh9IVUVyiz3Ejoie85t2mthXzmQe6ePL89MDXPPp3k+A8xIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRykz8d+7duPn/XQ969fjm2Tf3fbeTmycrzzDP76KOvcfF6m4xj5G/rYb8W8zMUxvnV97LRoXibimJ1vfeyxbl58WiGJgyQOkjhI4iCJgyQOkjhI4iCJg3TwlP1hV4/dOst/1d3HauvKUUf1nYW5dIax2heHq0DGnWSsNsXhKpBx5xkrO6QkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIH6fHl+WnwR9109N8YvOHWykESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB2nt11u/nhoePN3ve64f5sdq3aUUVg6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDtCmOkbuV3NH023nGat/K8f7rUcZbJxmrrW8r9aqUcekMY7X2XtlLOhh397GyQ0oSB0kcJHGQxEESB0kcJHGQxEESB2kijtmjuXc/+vtBrJuXuZVjfLvK2GnRvEy/rZznagPeWjEvR/Y5TnK1AX+4+bxM/EdqPhqfVkjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIP0C1nly+8zhAwcAAAAASUVORK5CYII=">
+<style>
+:root{
+  --bg:#f1efe9; --card:#ffffff; --text:#201e1a; --sub:#78726a;
+  --border:#e2ded4; --accent:#b3491f; --accent-weak:#f4ddce;
+  --danger:#9f1d34; --ok:#2f6b52;
+  --c-main:#b3491f; --c-secondary:#2f6b5e; --c-accessory:#7a746a; --c-deload:#3b5a73; --c-test:#9f1d34;
+}
+:root[data-theme="dark"]{
+  --bg:#171512; --card:#221f1b; --text:#f1ede6; --sub:#a39c8f;
+  --border:#332e27; --accent:#e2793f; --accent-weak:#3c2417;
+  --danger:#f0697e; --ok:#5fae8b;
+  --c-main:#e2793f; --c-secondary:#4f9484; --c-accessory:#948d80; --c-deload:#6d94ad; --c-test:#f0697e;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#171512; --card:#221f1b; --text:#f1ede6; --sub:#a39c8f;
+    --border:#332e27; --accent:#e2793f; --accent-weak:#3c2417;
+    --danger:#f0697e; --ok:#5fae8b;
+    --c-main:#e2793f; --c-secondary:#4f9484; --c-accessory:#948d80; --c-deload:#6d94ad; --c-test:#f0697e;
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  padding-bottom:calc(40px + env(safe-area-inset-bottom));
+}
+header{
+  position:sticky; top:0; z-index:10; background:var(--bg);
+  padding:calc(14px + env(safe-area-inset-top)) 16px 8px;
+  border-bottom:1px solid var(--border);
+}
+h1{font-size:18px; margin:0 0 10px; display:flex; align-items:center; justify-content:space-between;}
+.gear{background:none;border:none;color:var(--sub);font-size:20px;padding:4px;cursor:pointer;}
+.seg{display:flex; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:3px; gap:3px;}
+.seg button{flex:1; border:none; background:none; padding:8px 0; border-radius:8px; font-size:14px; color:var(--sub); cursor:pointer;}
+.seg button.active{background:var(--accent); color:#fff; font-weight:600;}
+.tabs{display:flex; gap:6px; overflow-x:auto; padding:10px 16px 0; -webkit-overflow-scrolling:touch;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:0 0 auto; padding:7px 14px; border-radius:20px; background:var(--card); border:1px solid var(--border); font-size:13px; color:var(--sub); white-space:nowrap; cursor:pointer;}
+.tab.active{background:var(--accent-weak); color:var(--accent); border-color:var(--accent); font-weight:600;}
+main{padding:12px 16px;}
+.card{background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:12px;}
+.card-top{display:flex; align-items:center; gap:8px; margin-bottom:6px;}
+.badge{font-size:11px; padding:2px 8px; border-radius:20px; font-weight:600; color:#fff; letter-spacing:.2px;}
+.b-메인{background:var(--c-main);} .b-세컨더리{background:var(--c-secondary);} .b-보조{background:var(--c-accessory);}
+.b-디로드{background:var(--c-deload);} .b-테스트{background:var(--c-test);}
+.ex-name{font-size:16px; font-weight:700; letter-spacing:-.01em; text-wrap:balance;}
+.ex-select{font-size:15px; font-weight:700; letter-spacing:-.01em; border:1px solid var(--border); background:var(--card); color:var(--text); border-radius:8px; padding:5px 6px; font-family:inherit;}
+.done-wrap{margin-left:auto; display:flex; align-items:center; gap:4px; font-size:12px; color:var(--sub); white-space:nowrap;}
+.done-wrap input[type=checkbox]{width:18px; height:18px; accent-color:var(--accent); cursor:pointer;}
+.meta{font-size:12.5px; color:var(--sub); margin-bottom:10px;}
+.target{display:flex; align-items:baseline; gap:6px; margin-bottom:10px;}
+.target .num{font-size:24px; font-weight:700; color:var(--accent); font-variant-numeric:tabular-nums;}
+.target .unit{font-size:13px; color:var(--sub);}
+.row{display:flex; gap:8px; margin-bottom:8px;}
+.field{flex:1;}
+.field label{display:block; font-size:11px; color:var(--sub); margin-bottom:3px;}
+input[type=number], input[type=text], textarea{
+  width:100%; border:1px solid var(--border); background:var(--bg); color:var(--text);
+  border-radius:8px; padding:9px 8px; font-size:15px; font-family:inherit; font-variant-numeric:tabular-nums;
+}
+input:focus, textarea:focus, button:focus-visible{outline:2px solid var(--accent); outline-offset:1px;}
+textarea{resize:none; min-height:38px;}
+.sets{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;}
+.setbox{width:52px;}
+.setbox label{display:block; font-size:10px; text-align:center; color:var(--sub); margin-bottom:3px;}
+.setbox input{text-align:center; padding:8px 2px;}
+.hint{font-size:11px; color:var(--sub); text-align:right; margin-top:2px;}
+.empty{text-align:center; color:var(--sub); font-size:14px; padding:40px 0;}
+
+.modal-bg{position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:flex-end; z-index:50;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--card); width:100%; max-height:88vh; overflow-y:auto; border-radius:16px 16px 0 0; padding:18px 16px 28px;}
+.modal h2{margin:0 0 14px; font-size:17px;}
+.modal-close{float:right; background:none; border:none; font-size:18px; color:var(--sub);}
+.rm-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;}
+.rm-field label{display:block; font-size:12px; color:var(--sub); margin-bottom:4px;}
+.section-title{font-size:13px; font-weight:700; color:var(--sub); margin:18px 0 8px; text-transform:uppercase; letter-spacing:.3px;}
+.btn{display:block; width:100%; text-align:center; padding:11px; border-radius:10px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:14px; margin-bottom:8px; cursor:pointer;}
+.btn.primary{background:var(--accent); color:#fff; border-color:var(--accent); font-weight:600;}
+.btn.danger{color:var(--danger); border-color:var(--danger);}
+.toast{position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--text); color:var(--bg); padding:8px 16px; border-radius:20px; font-size:13px; opacity:0; transition:opacity .25s; pointer-events:none; z-index:60;}
+.toast.show{opacity:.92;}
+input[type=file]{display:none;}
+.b-머신{background:var(--c-accessory);}
+.day-title{font-size:13px; color:var(--sub); margin:0 0 10px; font-weight:600;}
+.why{font-size:11.5px; color:var(--sub); background:var(--bg); border-radius:8px; padding:6px 8px; margin-bottom:8px; line-height:1.45;}
+.prog{font-size:12px; border-left:3px solid var(--accent); padding:4px 8px; margin-bottom:10px; line-height:1.45;}
+.prog.up{border-color:var(--ok); color:var(--ok);}
+.rir-chip{display:inline-block; font-size:11px; font-weight:700; padding:1px 7px; border-radius:20px; background:var(--accent-weak); color:var(--accent);}
+.info h3{font-size:14px; margin:18px 0 6px;}
+.info p, .info li{font-size:13px; line-height:1.6; color:var(--text);}
+.info ul{padding-left:18px; margin:4px 0;}
+.info .ref{font-size:11.5px; color:var(--sub);}
+.vol-table{width:100%; border-collapse:collapse; font-size:13px; font-variant-numeric:tabular-nums;}
+.vol-table td, .vol-table th{padding:5px 4px; border-bottom:1px solid var(--border); text-align:left;}
+.vol-table td:last-child, .vol-table th:last-child{text-align:right;}
+.warn{color:var(--danger); font-weight:600;}
+.seg button.arrow{flex:0 0 48px;}
+.seg button:disabled{opacity:.3; cursor:default;}
+.b-탑세트{background:var(--c-main);} .b-백오프{background:var(--c-secondary);}
+.switch{font-size:12px; color:var(--accent); text-decoration:none; margin-right:6px; font-weight:600;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>탑세트 근력 프로그램 <span><a class="switch" href="./">5×5 →</a><button class="gear" onclick="openInfo()" aria-label="프로그램 근거">ⓘ</button><button class="gear" onclick="openSettings()" aria-label="설정">⚙</button></span></h1>
+  <div class="seg">
+    <button class="arrow" id="cyclePrev" onclick="setCycle(state.cycle-1)" aria-label="이전 사이클">◀</button>
+    <button class="active" id="cycleLabel" onclick="openSettings()">사이클 1</button>
+    <button class="arrow" id="cycleNext" onclick="setCycle(state.cycle+1)" aria-label="다음 사이클">▶</button>
+  </div>
+</header>
+
+<div class="tabs" id="weekTabs"></div>
+<div class="tabs" id="dayTabs"></div>
+
+<main id="content"></main>
+
+<div class="modal-bg" id="settingsModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeSettings()">✕</button>
+    <h2>설정</h2>
+
+    <div class="section-title">시작 1RM</div>
+    <p class="meta">탑세트 첫 무게는 1RM의 82.5%, 데드리프트 사이클 1 작업 무게는 83.5%로 계산합니다. 첫 탑세트 기록 이후에는 기록을 기준으로 진행합니다.</p>
+    <div class="rm-grid">
+      <div class="rm-field"><label>스쿼트 1RM</label><input type="number" step="0.5" id="rm_backSquat"></div>
+      <div class="rm-field"><label>벤치프레스 1RM</label><input type="number" step="0.5" id="rm_benchPress"></div>
+      <div class="rm-field"><label>데드리프트 1RM</label><input type="number" step="0.5" id="rm_deadlift"></div>
+      <div class="rm-field"><label>오버헤드프레스 1RM</label><input type="number" step="0.5" id="rm_overheadPress"></div>
+    </div>
+
+    <div class="section-title" id="wwTitle">사이클 1 데드리프트 작업 무게</div>
+    <p class="meta">1~3주차에 같은 무게로 진행합니다. 2사이클부터는 4주차 테스트 결과로 자동 계산되고, 여기서 바꾸면 그 값이 우선합니다.</p>
+    <div class="rm-field" style="margin-bottom:10px;"><label>데드리프트 (kg)</label><input type="number" step="0.5" id="ww_deadlift"></div>
+    <div class="rm-field" style="margin-bottom:14px;"><label>반올림 단위 (kg)</label><input type="number" step="0.5" id="roundUnit"></div>
+
+    <button class="btn primary" onclick="saveWeights()">저장</button>
+
+    <div class="section-title">데이터 백업</div>
+    <button class="btn" onclick="exportData()">내보내기 (JSON 다운로드)</button>
+    <button class="btn" onclick="document.getElementById('importFile').click()">가져오기</button>
+    <input type="file" id="importFile" accept="application/json" onchange="importData(event)">
+
+    <div class="section-title">초기화</div>
+    <button class="btn danger" onclick="resetAll()">모든 기록 삭제</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="infoModal">
+  <div class="modal info">
+    <button class="modal-close" onclick="closeInfo()">✕</button>
+    <h2>프로그램 설계 근거</h2>
+
+    <h3>전체 구조</h3>
+    <p>4주 사이클을 반복합니다. 벤치·OHP·스쿼트는 탑세트 1세트 + 백오프 2세트로 매 세션 무게를 조정하고, 데드리프트는 3×3을 3주 같은 무게로 한 뒤 4주차에 판정합니다. 4주차는 탑세트 종목·머신 운동 모두 디로드입니다.</p>
+
+    <h3>탑세트 + 백오프 (벤치 1·4일차, OHP 2일차, 스쿼트 3일차)</h3>
+    <ul>
+      <li>탑세트: 5RM 이하 무게로 3~5회, 1~2회 여유를 남기고 멈춥니다. 최대근력 자극을 맡습니다.</li>
+      <li>백오프 1: 탑세트의 85%로 8회. 백오프 2: 탑세트의 75%로 12회 (스쿼트는 80%로 10회). 둘 다 1~2회 여유. 근비대 볼륨을 채웁니다.</li>
+      <li>바벨 운동은 실패 지점 직전에 자세가 먼저 무너지므로 RM까지 가지 않습니다. 스쿼트는 고반복에서 호흡이 먼저 한계에 닿아서 10회로 줄였습니다.</li>
+      <li>진행: 지난 탑세트가 5회면 다음 세션 상체 +2.5kg, 하체 +5kg. 3~4회면 같은 무게로 5회 도전, 3회 미만이면 5% 감량. 벤치는 주 2회라 1일차 기록이 4일차 무게를 정합니다.</li>
+      <li>시작 무게는 1RM의 82.5%. 탑세트 실제 중량을 바꾸면 백오프 무게가 그에 맞춰 다시 계산됩니다.</li>
+      <li>4주차 디로드: 탑세트 무게의 90%로 3회만 하고 백오프는 생략. 디로드 기록은 진행 계산에 쓰지 않습니다.</li>
+    </ul>
+
+    <h3>데드리프트: 같은 무게로 3주, 4주차에 판정 (5일차)</h3>
+    <ul>
+      <li>고반복 데드는 허리가 먼저 풀려 부상 위험이 크고 회복 비용도 가장 커서 3×3 고정 무게로 운영합니다.</li>
+      <li>시작 무게는 1RM의 83.5%. 4주차에 작업 무게로 최대 반복(AMRAP) 1세트, 6회 이상이면 다음 사이클 +5kg.</li>
+      <li>처음 미달이면 같은 무게로 한 번 더, 2사이클 연속 미달이면 10% 내려서 다시 시작합니다.</li>
+      <li>세트 사이에 3~5분 쉬면 다음 세트의 반복 수와 근력 향상이 유지됩니다.</li>
+    </ul>
+    <p class="ref">Davies 2016 (Sports Med), Refalo 2023/2024 (Sports Med), Robinson 2024 (Sports Med), Helms 2018 (Front Physiol), Zourdos 2016 (JSCR), Schoenfeld 2016 (JSCR, 휴식 3분 vs 1분), Grgic 2018 (Sports Med, 빈도), Tuchscherer RPE 차트</p>
+
+    <h3>머신 운동: RIR 0~2로 볼륨 채우기</h3>
+    <ul>
+      <li>근비대는 실패 지점에 가까울수록 커집니다(RIR 0~3 구간). 반면 근력은 실패 근접 여부에 크게 영향받지 않습니다. 머신·단관절 운동은 기술 부담과 회복 비용이 작아서 RIR 0~1까지 밀어도 안전합니다.</li>
+      <li>복합 머신(로우, 프레스, 핵스쿼트)은 RIR 2 → 1 → 1, 단관절(컬, 익스텐션, 푸쉬다운)은 RIR 1 → 1 → 0으로 주차마다 내려갑니다.</li>
+      <li>6~30회 범위에서는 실패 근처까지만 가면 근비대 효과가 비슷합니다. 그래서 무거운 복합 머신은 8~10회, 단관절은 10~15회로 정해 관절 부담과 운동 시간을 줄였습니다.</li>
+      <li>이중 진행: 모든 세트가 반복 범위 상단에 닿으면 다음 세션에 2.5~5% 올립니다. 앱이 지난 기록을 보고 자동으로 알려줍니다.</li>
+      <li>근육이 늘어난 위치에서 부하를 받는 운동이 유리합니다. 오버헤드 익스텐션, 인클라인 덤벨컬, 시티드 레그컬이 여기에 해당합니다.</li>
+      <li>사람들은 실패 지점에서 먼 RIR일수록 실제보다 여유를 적게 추정하는 경향이 있습니다. 가끔 마지막 세트를 실패 지점까지 해보며 RIR 감각을 보정하세요.</li>
+    </ul>
+    <p class="ref">Schoenfeld 2017 (JSCR, 저부하 vs 고부하), Refalo 2023 (Sports Med), Robinson 2024 (Sports Med), Halperin 2022 (Sports Med, RIR 정확도), Plotkin 2022 (PeerJ, 진행 방식), Maeo 2021 (MSSE, 레그컬), Maeo 2023 (Eur J Sport Sci, 오버헤드 삼두), Pedrosa 2022 (Eur J Sport Sci), Singer 2024 (휴식 시간 메타분석)</p>
+
+    <h3>주간 볼륨 (1~3주차, 근육별 세트 수)</h3>
+    <p class="ref">직접 자극은 1세트, 보조 근육은 0.5세트로 셉니다(Pelland 2024 메타회귀 방식). 근비대는 대략 주 10~20세트에서 효과가 크고, 그 이상은 효과가 줄어듭니다. 한 세션에 한 근육을 약 11세트 넘게 하면 추가 효과가 작아집니다.</p>
+    <table class="vol-table" id="volTable"></table>
+    <p class="ref">Schoenfeld 2017 (J Sports Sci, 볼륨 용량-반응), Pelland 2024 (Sports Med), Baz-Valle 2022 (JHK), Israetel·Helms 볼륨 지표(MEV/MAV/MRV)</p>
+
+    <h3>참고</h3>
+    <p class="ref">논문 결과는 평균값입니다. 2~3주 기록을 보고 회복이 안 되는 부위는 세트를 줄이고, 계속 쉽게 느껴지는 부위는 1~2세트 더하세요.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ---- 4대운동 ----
+const LIFT_LABEL = {backSquat:"스쿼트", benchPress:"벤치프레스", deadlift:"데드리프트", overheadPress:"오버헤드프레스"};
+const LIFT_MUSCLES = {
+  benchPress:{"가슴":1,"삼두":0.5,"전면 어깨":0.5},
+  overheadPress:{"전면 어깨":1,"삼두":0.5,"측면 어깨":0.5},
+  backSquat:{"대퇴사두":1,"둔근":0.5},
+  deadlift:{"둔근":1,"햄스트링":0.5,"등":0.5},
+};
+
+const LIFTS = ["backSquat","benchPress","deadlift","overheadPress"];
+// 탑세트 종목: 탑세트 3~5회 + 백오프(탑세트 대비 pct). 지난 탑세트 5회 → inc 증량, 3회 미만 → 5% 감량
+const TOP_RULE = {
+  benchPress:   {inc:2.5, backoff:[{reps:8,pct:0.85},{reps:12,pct:0.75}]},
+  overheadPress:{inc:2.5, backoff:[{reps:8,pct:0.85},{reps:12,pct:0.75}]},
+  backSquat:    {inc:5,   backoff:[{reps:8,pct:0.85},{reps:10,pct:0.80}]},
+};
+const TOP_START_PCT = 0.825;
+const TOP_DELOAD_PCT = 0.9;
+// 데드리프트: 1~3주차 같은 작업 무게로 3×3, 4주차 AMRAP이 amrap회 이상이면 inc만큼 증량
+const LIFT_RULE = {
+  deadlift:{sets:3, reps:3, amrap:6, inc:5},
+};
+const START_PCT = {deadlift:0.835};
+const RESET_PCT = 0.9; // 2사이클 연속 미달 시
+
+// ---- 머신/보조 운동 라이브러리 ----
+// type: compound(RIR 2→1→1) / isolation(RIR 1→1→0)
+const LIB = {
+  "머신 인클라인 프레스":{reps:"8-10",  type:"compound",  rest:"2-3분", muscles:{"가슴":1,"전면 어깨":0.5,"삼두":0.5}},
+  "인클라인 덤벨프레스": {reps:"8-10",  type:"compound",  rest:"2-3분", muscles:{"가슴":1,"전면 어깨":0.5,"삼두":0.5}},
+  "체스트 프레스":       {reps:"10-12", type:"compound",  rest:"2분",   muscles:{"가슴":1,"삼두":0.5}},
+  "인클라인 플라이":     {reps:"12-15", type:"isolation", rest:"90초",  muscles:{"가슴":1}, why:"가슴이 늘어난 위치에서 부하를 받음. 어깨 통증이 있으면 가동범위를 살짝 줄이세요."},
+  "인클라인 덤벨컬":     {reps:"10-12", type:"isolation", rest:"90초",  muscles:{"이두":1}, why:"팔이 몸 뒤로 가서 이두가 늘어난 상태로 부하를 받음. 늘어난 위치 훈련의 이점은 여러 연구에서 나오지만 근거 수준은 중간 정도."},
+  "바벨컬":             {reps:"8-10",  type:"isolation", rest:"90초",  muscles:{"이두":1}},
+  "머신 이두컬":         {reps:"12-15", type:"isolation", rest:"90초",  muscles:{"이두":1}},
+  "케이블 오버헤드 익스텐션":{reps:"10-12", type:"isolation", rest:"90초", muscles:{"삼두":1}, why:"머리 위 자세에서 삼두 장두가 늘어남. 푸쉬다운보다 삼두 성장이 약 1.4배 (Maeo 2023)."},
+  "케이블 푸쉬다운":     {reps:"12-15", type:"isolation", rest:"90초",  muscles:{"삼두":1}},
+  "머신 티바로우":       {reps:"8-10",  type:"compound",  rest:"2-3분", muscles:{"등":1,"후면 어깨":0.5,"이두":0.5}},
+  "머신 시티드로우":     {reps:"10-12", type:"compound",  rest:"2분",   muscles:{"등":1,"후면 어깨":0.5,"이두":0.5}},
+  "머신 풀다운":         {reps:"10-12", type:"compound",  rest:"2분",   muscles:{"등":1,"이두":0.5}},
+  "머신 숄더프레스":     {reps:"8-12",  type:"compound",  rest:"2분",   muscles:{"전면 어깨":1,"삼두":0.5,"측면 어깨":0.5}},
+  "사이드 레터럴 레이즈":{reps:"12-20", type:"isolation", rest:"60-90초",muscles:{"측면 어깨":1}, why:"프로그램에 측면 어깨 직접 운동이 없어서 교체용으로 추가."},
+  "리어델트 플라이":     {reps:"12-20", type:"isolation", rest:"60-90초",muscles:{"후면 어깨":1}},
+  "레그 익스텐션":       {reps:"12-15", type:"isolation", rest:"90초",  muscles:{"대퇴사두":1}},
+  "핵스쿼트":           {reps:"8-10",  type:"compound",  rest:"2-3분", muscles:{"대퇴사두":1,"둔근":0.5}},
+  "레그프레스":         {reps:"10-12", type:"compound",  rest:"2-3분", muscles:{"대퇴사두":1,"둔근":0.5}},
+  "레그컬":             {reps:"10-12", type:"isolation", rest:"90초",  muscles:{"햄스트링":1}, why:"가능하면 시티드 레그컬로. 라잉보다 햄스트링 성장이 큼 (Maeo 2021)."},
+};
+
+// ---- 5일 구성 ----
+const DAYS = ["Day 1","Day 2","Day 3","Day 4","Day 5"];
+// top: 탑세트 종목 / 그 외: 데드리프트 사이클 처방
+const DAY_PLAN = {
+  "Day 1":{title:"벤치 탑세트 + 가슴·팔", main:[{lift:"benchPress",top:true}],
+    acc:[["머신 인클라인 프레스",3],["인클라인 덤벨컬",3],["바벨컬",3],["케이블 오버헤드 익스텐션",3],["케이블 푸쉬다운",3]]},
+  "Day 2":{title:"OHP 탑세트 + 등·어깨", main:[{lift:"overheadPress",top:true}],
+    acc:[["머신 티바로우",3],["머신 시티드로우",3],["머신 풀다운",3],["머신 숄더프레스",3]]},
+  "Day 3":{title:"스쿼트 탑세트 + 하체", main:[{lift:"backSquat",top:true}],
+    acc:[["레그 익스텐션",2],["핵스쿼트",3],["레그프레스",2],["레그컬",4]]},
+  "Day 4":{title:"벤치 탑세트 + 가슴·팔", main:[{lift:"benchPress",top:true}],
+    acc:[["인클라인 덤벨프레스",3],["인클라인 플라이",3],["인클라인 덤벨컬",3],["머신 이두컬",3],["케이블 오버헤드 익스텐션",3],["케이블 푸쉬다운",3]]},
+  "Day 5":{title:"데드리프트 + 등·어깨", main:[{lift:"deadlift"}],
+    acc:[["머신 티바로우",3],["머신 시티드로우",3],["머신 풀다운",3],["머신 숄더프레스",2]]},
+};
+// 4주차: 데드리프트는 AMRAP 테스트, 탑세트 종목은 디로드
+const TEST_DAY = {"Day 5":"deadlift"};
+
+function machineRIR(type, week){
+  if(week===4) return "3-4";
+  const table = type==="compound" ? {1:2,2:1,3:1} : {1:1,2:1,3:0};
+  return String(table[week]);
+}
+
+function buildItems(week, day){
+  const plan = DAY_PLAN[day];
+  const items = [];
+  plan.main.forEach(m=>{
+    if(m.top){
+      if(week===4){
+        items.push({kind:"main", cat:"디로드", lift:m.lift, exercise:topName(m.lift), sets:1, reps:"3", pct:TOP_DELOAD_PCT, rir:"3+", rest:"3분", role:"top"});
+        return;
+      }
+      items.push({kind:"main", cat:"탑세트", lift:m.lift, exercise:topName(m.lift), sets:1, reps:"3-5", pct:1, rir:"1-2", rest:"3-5분", role:"top"});
+      TOP_RULE[m.lift].backoff.forEach((b,i)=>items.push({kind:"main", cat:"백오프", lift:m.lift, exercise:`${LIFT_LABEL[m.lift]} 백오프 ${b.reps}회`, sets:1, reps:String(b.reps), pct:b.pct, rir:"1-2", rest:"2-3분", role:"backoff", first:i===0}));
+      return;
+    }
+    const rule = LIFT_RULE[m.lift];
+    if(week===4){
+      if(TEST_DAY[day]===m.lift) items.push({kind:"main", cat:"테스트", lift:m.lift, exercise:testName(m.lift), sets:1, reps:"최대", pct:1, rir:"0-1", rest:"3-5분", test:true});
+      return;
+    }
+    items.push({kind:"main", cat:"메인", lift:m.lift, exercise:LIFT_LABEL[m.lift], sets:rule.sets, reps:String(rule.reps), pct:1, rir:"2-3", rest:"3-5분"});
+  });
+  plan.acc.forEach(([name,sets],slot)=>{
+    items.push({kind:"acc", cat:week===4?"디로드":"머신", slot, defaultExercise:name, sets: week===4 ? Math.max(1,Math.ceil(sets/2)) : sets});
+  });
+  return items;
+}
+
+// ---- 저장소 ----
+const STORE_KEY = "topsetProgram_v1";
+
+function defaultStore(){
+  return {
+    oneRM:{backSquat:100, benchPress:75, deadlift:120, overheadPress:50},
+    roundUnit:2.5,
+    cycles:{},   // 사이클별로 직접 입력한 데드리프트 작업 무게만 저장 (나머지는 자동 계산)
+    logs:{},
+    sessions:{}
+  };
+}
+function normalizeStore(parsed){
+  const def = defaultStore();
+  return {
+    oneRM:{...def.oneRM, ...parsed.oneRM},
+    roundUnit: parsed.roundUnit||def.roundUnit,
+    cycles: parsed.cycles||{},
+    logs: parsed.logs||{},
+    sessions: parsed.sessions||{}
+  };
+}
+function loadStore(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(raw) return normalizeStore(JSON.parse(raw));
+  }catch(e){}
+  return defaultStore();
+}
+function saveStore(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(store)); }
+  catch(e){ showToast('저장 실패 (브라우저 저장소 사용 불가)'); }
+}
+
+let store = loadStore();
+let state = { cycle:1, week:1, day:"Day 1" };
+
+// 기록이 있는 가장 마지막 사이클 (그다음 사이클까지 이동 가능)
+function maxCycle(){
+  let m = 1;
+  [...Object.keys(store.logs), ...Object.keys(store.sessions)].forEach(k=>{
+    const r = k.match(/^c(\d+)_/);
+    if(r) m = Math.max(m, Number(r[1]));
+  });
+  Object.keys(store.cycles).forEach(k=>{ m = Math.max(m, Number(k)); });
+  return m;
+}
+function setCycle(n){
+  if(n<1 || n>maxCycle()+1) return;
+  state.cycle = n;
+  render();
+}
+
+function buildTabs(){
+  document.getElementById('cycleLabel').textContent = `사이클 ${state.cycle}`;
+  document.getElementById('cyclePrev').disabled = state.cycle<=1;
+  document.getElementById('cycleNext').disabled = state.cycle>maxCycle();
+
+  const weekTabs = document.getElementById('weekTabs');
+  weekTabs.innerHTML = "";
+  for(let w=1; w<=4; w++){
+    const b = document.createElement('button');
+    b.className = 'tab' + (state.week===w?' active':'');
+    b.textContent = w+"주차" + (w===4?" (테스트/디로드)":"");
+    b.onclick = ()=>{ state.week=w; render(); };
+    weekTabs.appendChild(b);
+  }
+  const dayTabs = document.getElementById('dayTabs');
+  dayTabs.innerHTML = "";
+  DAYS.forEach((d,i)=>{
+    const b = document.createElement('button');
+    b.className = 'tab' + (state.day===d?' active':'');
+    b.textContent = (i+1)+"일차";
+    b.onclick = ()=>{ state.day=d; render(); };
+    dayTabs.appendChild(b);
+  });
+}
+
+function itemKey(item){
+  const base = `c${state.cycle}_w${state.week}_${state.day}`;
+  return item.kind==="acc" ? `${base}_s${item.slot}` : `${base}_${item.exercise}`;
+}
+function sessionKey(){ return `c${state.cycle}_w${state.week}_${state.day}`; }
+
+function roundTo(v, unit){ return Math.round(v/unit)*unit; }
+function testName(lift){ return `${LIFT_LABEL[lift]} 테스트`; }
+function testReps(cycle, lift){
+  const day = Object.keys(TEST_DAY).find(d=>TEST_DAY[d]===lift);
+  const log = store.logs[`c${cycle}_w4_${day}_${testName(lift)}`];
+  const r = log && log.reps ? parseInt(log.reps[0]) : NaN;
+  return isNaN(r) ? null : r;
+}
+// 사이클 1부터 차례로: 작업 무게(직접 입력 > 이전 사이클 결과 > 1RM×시작 비율) → 4주차 판정 → 다음 무게
+// 목표 이상: 증량 / 첫 미달: 유지 / 2사이클 연속 미달: 10% 감량. 테스트 기록이 없으면 유지
+function liftHistory(lift, upto){
+  const rule = LIFT_RULE[lift], unit = store.roundUnit||2.5;
+  const out = [];
+  let streak = 0;
+  for(let n=1; n<=upto; n++){
+    const saved = store.cycles[n] && store.cycles[n][lift];
+    const weight = saved || (n===1 ? roundTo(store.oneRM[lift]*START_PCT[lift], unit) : out[n-2].next);
+    const reps = testReps(n, lift);
+    let status, next = weight;
+    if(reps==null) status = "pending";
+    else if(reps>=rule.amrap){ status = "pass"; next = weight+rule.inc; streak = 0; }
+    else if(streak>=1){ status = "reset"; next = roundTo(weight*RESET_PCT, unit); streak = 0; }
+    else { status = "fail"; streak = 1; }
+    out.push({weight, reps, status, next, prevFailed:n>1 && out[n-2].status==="fail"});
+  }
+  return out;
+}
+function cycleInfo(cycle, lift){ return liftHistory(lift, cycle)[cycle-1]; }
+function topName(lift){ return `${LIFT_LABEL[lift]} 탑세트`; }
+// 지난 탑세트 기록(4주차 디로드 제외)으로 오늘 탑세트 무게 결정
+function topPlan(lift){
+  const unit = store.roundUnit||2.5, inc = TOP_RULE[lift].inc;
+  const cur = orderOf(state.cycle, state.week, state.day);
+  let prev = null, bestOrder = -1;
+  Object.entries(store.logs).forEach(([k,log])=>{
+    if(log.exercise!==topName(lift) || log.actualWeight==="" || log.actualWeight==null) return;
+    if(/_w4_/.test(k)) return;
+    const o = parseKey(k);
+    if(o<0 || o>=cur) return;
+    if(o>bestOrder){ bestOrder=o; prev=log; }
+  });
+  if(!prev) return {weight:roundTo(store.oneRM[lift]*TOP_START_PCT, unit), text:"첫 기록: 1RM의 82.5%로 시작합니다. 5회가 쉬우면 무게를 올려 기록하세요.", up:false};
+  const w = parseFloat(prev.actualWeight), reps = parseInt((prev.reps||[])[0]);
+  const s = `지난 탑세트: ${w}kg × ${isNaN(reps)?'-':reps}회`;
+  if(isNaN(reps)) return {weight:w, text:`${s} → 반복 수 기록이 없어 같은 무게`, up:false};
+  if(reps>=5) return {weight:w+inc, text:`${s} → 5회 달성. +${inc}kg 증량`, up:true};
+  if(reps<3) return {weight:roundTo(w*0.95, unit), text:`${s} → 3회 미만. 5% 감량`, up:false};
+  return {weight:w, text:`${s} → 같은 무게로 5회 도전`, up:false};
+}
+// 백오프는 오늘 탑세트 실제 중량(없으면 목표)을 기준으로 계산
+function todayTopWeight(lift){
+  const log = store.logs[itemKey({kind:"main", exercise:topName(lift)})];
+  const actual = log ? parseFloat(log.actualWeight) : NaN;
+  return actual>0 ? actual : topPlan(lift).weight;
+}
+function calcTarget(item){
+  if(item.kind!=="main") return null;
+  const unit = store.roundUnit||2.5;
+  if(item.role==="top") return roundTo(topPlan(item.lift).weight * item.pct, unit);
+  if(item.role==="backoff") return roundTo(todayTopWeight(item.lift) * item.pct, unit);
+  const w = cycleInfo(state.cycle, item.lift).weight;
+  if(!w) return null;
+  return roundTo(w * item.pct, store.roundUnit||2.5);
+}
+function repRange(repsStr){
+  const nums = (String(repsStr).match(/\d+/g)||[]).map(Number);
+  if(nums.length===0) return null;
+  return {low:Math.min(...nums), high:Math.max(...nums)};
+}
+
+// 세션 순서: 사이클 → 주차 → 일차
+function orderOf(cycle, week, day){
+  return cycle*100 + week*10 + DAYS.indexOf(day);
+}
+function parseKey(key){
+  const m = key.match(/^c(\d+)_w(\d)_(Day \d)_/);
+  return m ? orderOf(Number(m[1]), Number(m[2]), m[3]) : -1;
+}
+
+// 같은 종목의 가장 최근 이전 기록 (현재 세션보다 앞선 것만)
+function previousRecord(exerciseName){
+  const cur = orderOf(state.cycle, state.week, state.day);
+  let best = null, bestOrder = -1;
+  Object.entries(store.logs).forEach(([k,log])=>{
+    if(log.exercise!==exerciseName || log.actualWeight==="" || log.actualWeight==null) return;
+    const o = parseKey(k);
+    if(o<0 || o>=cur) return;
+    if(o>bestOrder){ bestOrder=o; best=log; }
+  });
+  return best;
+}
+
+// 이중 진행 추천
+function progression(exerciseName, reps, sets){
+  const prev = previousRecord(exerciseName);
+  if(!prev) return {text:"첫 기록입니다. 목표 RIR이 나오는 무게를 찾아 기록하세요.", weight:null, up:false};
+  const w = parseFloat(prev.actualWeight);
+  const done = (prev.reps||[]).slice(0, sets).map(Number).filter(n=>!isNaN(n) && n>0);
+  const range = repRange(reps);
+  const prevStr = `지난 기록: ${w}kg × ${done.length?done.join(', '):'-'}`;
+  if(state.week===4){
+    return {text:`${prevStr} → 디로드: 같은 무게로 세트 절반, 여유 있게`, weight:w, up:false};
+  }
+  if(range && done.length>=sets && done.every(n=>n>=range.high)){
+    const inc = Math.max(2.5, roundTo(w*0.05, 2.5));
+    return {text:`${prevStr} → 모든 세트 상단(${range.high}회) 달성. +${inc}kg 증량 추천`, weight:w+inc, up:true};
+  }
+  if(range && done.some(n=>n<range.low)){
+    return {text:`${prevStr} → 범위 하단(${range.low}회) 미달 세트 있음. 무게 유지하거나 5% 줄이기`, weight:w, up:false};
+  }
+  return {text:`${prevStr} → 같은 무게로 반복 수 늘리기`, weight:w, up:false};
+}
+
+function render(){
+  buildTabs();
+  const items = buildItems(state.week, state.day);
+  const content = document.getElementById('content');
+  content.innerHTML = "";
+
+  const sKey = sessionKey();
+  const session = store.sessions[sKey] || {date:""};
+  const dateCard = document.createElement('div');
+  dateCard.className = 'card';
+  dateCard.innerHTML = `<p class="day-title">${DAY_PLAN[state.day].title}${state.week===4?(TEST_DAY[state.day]?' · AMRAP 테스트일':' · 디로드'):''}</p>
+    <div class="field">
+      <label>운동 날짜</label>
+      <input type="date" value="${session.date||''}" onchange="updateSessionDate(this.value)">
+    </div>`;
+  content.appendChild(dateCard);
+
+  items.forEach(item=>{
+    const key = itemKey(item);
+    const log = store.logs[key] || {};
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = item.kind==="main" ? mainCardHtml(item, key, log) : accCardHtml(item, key, log);
+    content.appendChild(card);
+  });
+
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'btn primary';
+  saveBtn.style.marginTop = '4px';
+  saveBtn.textContent = '저장';
+  saveBtn.onclick = saveAll;
+  content.appendChild(saveBtn);
+}
+
+function setsHtml(key, sets, log){
+  let html = `<div class="sets">`;
+  for(let s=0; s<sets; s++){
+    const val = log.reps && log.reps[s]!=null ? log.reps[s] : "";
+    html += `<div class="setbox">
+        <label>S${s+1}</label>
+        <input type="number" inputmode="numeric" value="${val}" placeholder="회" onchange="updateRep('${key}',${s},this.value)">
+      </div>`;
+  }
+  return html + `</div>`;
+}
+function noteHtml(key, log){
+  return `<div class="field">
+      <label>메모</label>
+      <textarea placeholder="컨디션, 통증, 실제 RIR 등" onchange="updateLog('${key}','note',this.value)">${log.note||''}</textarea>
+    </div>`;
+}
+function topHtml(cat, nameHtml, key, checked){
+  return `<div class="card-top">
+      <span class="badge b-${cat}">${cat}</span>
+      ${nameHtml}
+      <label class="done-wrap">
+        <input type="checkbox" ${checked?'checked':''} onclick="toggleDone('${key}', this.checked)">
+        <span>완료</span>
+      </label>
+    </div>`;
+}
+
+function mainCardHtml(item, key, log){
+  const target = calcTarget(item);
+  let html = topHtml(item.cat, `<span class="ex-name">${item.exercise}</span>`, key, log.done);
+  const rule = LIFT_RULE[item.lift];
+  const pctStr = `${Math.round(item.pct*1000)/10}%`;
+  const load = item.role==="top" ? (state.week===4 ? `탑세트 무게의 ${pctStr}` : "5RM 이하") : item.role==="backoff" ? `탑세트의 ${pctStr}` : item.test ? `목표 ${rule.amrap}회 이상` : "작업 무게";
+  html += `<div class="meta">${item.sets}세트 × ${item.reps}${item.test?" 반복":"회"} · ${load} · <span class="rir-chip">${item.sets===1?"RIR":"마지막 세트 RIR"} ${item.rir}</span> · 휴식 ${item.rest}</div>`;
+  if(target!==null){
+    html += `<div class="target"><span class="num">${target}</span><span class="unit">kg 목표</span></div>`;
+  }
+  if(item.role==="top"){
+    const p = topPlan(item.lift);
+    html += state.week===4
+      ? `<div class="prog">디로드: 탑세트 무게의 90%로 3회만 하고 백오프는 생략합니다. 이 기록은 진행 계산에 쓰지 않습니다.</div>`
+      : `<div class="prog${p.up?' up':''}">${p.text}</div><div class="why">워밍업 후 3~5회. 1~2회 여유가 남을 때 멈추세요. 5회를 채우면 다음 세션에 증량됩니다.</div>`;
+  }else if(item.role==="backoff"){
+    if(item.first) html += `<div class="why">탑세트 실제 중량을 입력하면 백오프 무게가 그 기준으로 다시 계산됩니다. 실패 지점까지 가지 말고 1~2회 남기세요.</div>`;
+  }else if(item.test){
+    const r = cycleInfo(state.cycle, item.lift);
+    const text = {
+      pending:`S1에 반복 수를 적으면 다음 사이클 무게가 정해집니다. ${rule.amrap}회 이상 → ${r.weight+rule.inc}kg, 미달 → ${r.prevFailed?`지난 사이클도 미달이라 10% 감량(${roundTo(r.weight*RESET_PCT, store.roundUnit||2.5)}kg)`:`${r.weight}kg 유지`}`,
+      pass:`${r.reps}회 → 성공. 다음 사이클 ${r.next}kg (+${rule.inc}kg)`,
+      fail:`${r.reps}회 → 목표 미달. 다음 사이클도 ${r.next}kg로 한 번 더`,
+      reset:`${r.reps}회 → 2사이클 연속 미달. 다음 사이클 ${r.next}kg (10% 감량)로 다시 시작`,
+    }[r.status];
+    html += `<div class="prog${r.status==="pass"?' up':''}">${text}</div>`;
+    html += `<div class="why">워밍업: 빈 봉 ×10 → 50% ×5 → 70% ×3 → 85% ×1, 그다음 작업 무게로 1세트를 최대한 반복하세요. 자세가 무너지기 직전(1회 여유)에서 멈추고, 깔끔하게 한 횟수만 셉니다.</div>`;
+  }else if(item.cat==="메인"){
+    html += `<div class="why">3주 동안 같은 무게입니다. 마지막 세트에 2~3회 여유가 남는 게 정상이고, 횟수를 못 채운 세트가 있으면 메모에 남기세요. 판정은 4주차 테스트로 합니다.</div>`;
+  }
+  html += `<div class="row"><div class="field">
+      <label>실제 중량 (kg)</label>
+      <input type="number" step="0.5" inputmode="decimal" value="${log.actualWeight??''}" placeholder="${target!==null?target:'중량 입력'}" onchange="updateLog('${key}','actualWeight',this.value)">
+    </div></div>`;
+  html += setsHtml(key, item.sets, log);
+  html += noteHtml(key, log);
+  return html;
+}
+
+function accCardHtml(item, key, log){
+  const name = log.exercise || item.defaultExercise;
+  const spec = LIB[name] || {reps:"10-12", type:"isolation", rest:"90초"};
+  const rir = machineRIR(spec.type, state.week);
+  const prog = progression(name, spec.reps, item.sets);
+  const opts = Object.keys(LIB).map(o=>`<option value="${o}" ${o===name?'selected':''}>${o}</option>`).join('');
+  let html = topHtml(item.cat, `<select class="ex-select" onchange="selectAccessory('${key}', this.value)">${opts}</select>`, key, log.done);
+  html += `<div class="meta">${item.sets}세트 × ${spec.reps}회 · <span class="rir-chip">RIR ${rir}</span> · 휴식 ${spec.rest}${name!==item.defaultExercise?` · 원래 종목: ${item.defaultExercise}`:''}</div>`;
+  html += `<div class="prog${prog.up?' up':''}">${prog.text}</div>`;
+  if(spec.why) html += `<div class="why">${spec.why}</div>`;
+  html += `<div class="row"><div class="field">
+      <label>실제 중량 (kg)</label>
+      <input type="number" step="0.5" inputmode="decimal" value="${log.actualWeight??''}" placeholder="${prog.weight!=null?prog.weight:'중량 입력'}" onchange="updateLog('${key}','actualWeight',this.value)">
+    </div></div>`;
+  html += setsHtml(key, item.sets, log);
+  html += noteHtml(key, log);
+  return html;
+}
+
+function findItem(key){
+  return buildItems(state.week, state.day).find(it=>itemKey(it)===key);
+}
+function ensureLog(key){
+  if(!store.logs[key]){
+    const item = findItem(key);
+    store.logs[key] = {actualWeight:"", reps:[], note:"", done:false,
+      exercise: item ? (item.kind==="acc" ? item.defaultExercise : item.exercise) : ""};
+  }
+  return store.logs[key];
+}
+function updateLog(key, field, value){
+  const log = ensureLog(key);
+  log[field] = value;
+  saveStore();
+  if(field==="actualWeight" && / 탑세트$/.test(log.exercise)) render(); // 백오프 무게 갱신
+  showToast('저장됨');
+}
+function updateRep(key, idx, value){
+  const log = ensureLog(key);
+  if(!log.reps) log.reps = [];
+  log.reps[idx] = value;
+  saveStore();
+  showToast('저장됨');
+}
+function selectAccessory(key, exerciseName){
+  const log = ensureLog(key);
+  log.exercise = exerciseName;
+  log.actualWeight = "";
+  log.reps = [];
+  saveStore();
+  render();
+  showToast(previousRecord(exerciseName)?'이전 기록 기준으로 추천 표시':'새 종목 선택됨');
+}
+// 완료 체크 시 비어 있는 칸만 목표값으로 채움 (직접 입력한 값은 덮어쓰지 않음)
+function toggleDone(key, checked){
+  const item = findItem(key);
+  const log = ensureLog(key);
+  log.done = checked;
+  if(checked && item){
+    let weight = null, reps = null, sets = item.sets;
+    if(item.kind==="main"){
+      weight = calcTarget(item);
+      const r = repRange(item.reps); reps = r && r.high;
+    }else{
+      const name = log.exercise || item.defaultExercise;
+      weight = progression(name, (LIB[name]||{}).reps, sets).weight;
+    }
+    if((log.actualWeight===""||log.actualWeight==null) && weight!=null) log.actualWeight = String(weight);
+    if(reps!=null){
+      if(!log.reps) log.reps = [];
+      for(let s=0; s<sets; s++) if(log.reps[s]==null || log.reps[s]==="") log.reps[s] = reps;
+    }
+  }
+  saveStore();
+  render();
+  showToast(checked?'완료로 표시됨':'완료 해제됨');
+}
+function updateSessionDate(value){
+  const key = sessionKey();
+  if(!store.sessions[key]) store.sessions[key] = {date:""};
+  store.sessions[key].date = value;
+  saveStore();
+  showToast('저장됨');
+}
+function saveAll(){
+  saveStore();
+  showToast('저장 완료');
+}
+
+let toastTimer=null;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 900);
+}
+
+// ---- 근거/볼륨 ----
+function weeklyVolume(){
+  const vol = {};
+  const add = (muscles, sets)=>Object.entries(muscles).forEach(([m,f])=>{ vol[m]=(vol[m]||0)+f*sets; });
+  DAYS.forEach(d=>{
+    buildItems(2, d).forEach(it=>{
+      if(it.kind==="main") add(LIFT_MUSCLES[it.lift], it.sets);
+      else add(LIB[it.defaultExercise].muscles, it.sets);
+    });
+  });
+  return vol;
+}
+function openInfo(){
+  const vol = weeklyVolume();
+  const order = ["가슴","등","대퇴사두","햄스트링","둔근","전면 어깨","측면 어깨","후면 어깨","이두","삼두"];
+  let html = `<tr><th>부위</th><th>주간 세트 (2주차 기준)</th></tr>`;
+  order.forEach(m=>{
+    const v = Math.round((vol[m]||0)*10)/10;
+    let flag = "";
+    if(v<8) flag = ` <span class="warn">적음</span>`;
+    else if(v>22) flag = ` <span class="warn">많음</span>`;
+    html += `<tr><td>${m}</td><td>${v}${flag}</td></tr>`;
+  });
+  document.getElementById('volTable').innerHTML = html;
+  document.getElementById('infoModal').classList.add('open');
+}
+function closeInfo(){ document.getElementById('infoModal').classList.remove('open'); }
+
+// ---- 설정 ----
+let shownDeadlift = null;
+function openSettings(){
+  document.getElementById('wwTitle').textContent = `사이클 ${state.cycle} 데드리프트 작업 무게`;
+  LIFTS.forEach(l=>{ document.getElementById(`rm_${l}`).value = store.oneRM[l]; });
+  shownDeadlift = cycleInfo(state.cycle, "deadlift").weight;
+  document.getElementById('ww_deadlift').value = shownDeadlift;
+  document.getElementById('roundUnit').value = store.roundUnit;
+  document.getElementById('settingsModal').classList.add('open');
+}
+function closeSettings(){
+  document.getElementById('settingsModal').classList.remove('open');
+}
+// 데드리프트 작업 무게 칸을 직접 바꿨을 때만 그 사이클 값으로 저장 (그대로면 자동 계산을 따라감)
+function saveWeights(){
+  store.roundUnit = parseFloat(document.getElementById('roundUnit').value) || 2.5;
+  LIFTS.forEach(l=>{
+    const v = parseFloat(document.getElementById(`rm_${l}`).value);
+    if(v>0) store.oneRM[l] = v;
+  });
+  const c = state.cycle;
+  const v = parseFloat(document.getElementById('ww_deadlift').value);
+  if(v>0 && v!==shownDeadlift){
+    delete store.cycles[c];
+    if(v!==cycleInfo(c, "deadlift").weight) store.cycles[c] = {deadlift:v};
+  }
+  saveStore();
+  closeSettings();
+  render();
+  showToast('저장됨');
+}
+
+function exportData(){
+  const blob = new Blob([JSON.stringify(store, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const d = new Date();
+  const stamp = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,'0')+"-"+String(d.getDate()).padStart(2,'0');
+  a.href = url;
+  a.download = `topset-program-backup-${stamp}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+function importData(evt){
+  const file = evt.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    try{
+      const parsed = JSON.parse(e.target.result);
+      if(!parsed.oneRM || !parsed.logs) throw new Error('invalid');
+      store = normalizeStore(parsed);
+      state.cycle = maxCycle();
+      saveStore();
+      openSettings();
+      render();
+      showToast('가져오기 완료');
+    }catch(err){
+      alert('올바른 백업 파일이 아닙니다.');
+    }
+  };
+  reader.readAsText(file);
+  evt.target.value = "";
+}
+
+function resetAll(){
+  if(!confirm('모든 입력 기록(실제중량, 반복수, 메모)이 삭제됩니다. 계속할까요?')) return;
+  store.logs = {};
+  store.sessions = {};
+  store.cycles = {};
+  state.cycle = 1;
+  saveStore();
+  closeSettings();
+  render();
+  showToast('초기화됨');
+}
+
+// init
+setCycle(maxCycle());
+</script>
+</body>
+</html>
