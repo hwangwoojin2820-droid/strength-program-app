@@ -178,7 +178,7 @@ input[type=file]{display:none;}
 
     <h3>4대운동: 같은 무게로 3주, 4주차에 판정</h3>
     <ul>
-      <li>벤치 5×5 (1·4일차), 스쿼트 5×5 (3일차), 데드리프트 3×3 (2·5일차), OHP 5×3 (2·5일차).</li>
+      <li>벤치 5×5 (1·4일차), 스쿼트 5×5 (3일차), 데드리프트 3×3 (2·5일차), OHP 5×3 (2일차)·3×5 (5일차, 작업 무게의 95%).</li>
       <li>시작 무게는 1RM의 스쿼트·벤치 77.5%, 데드 83.5%, OHP 80%. 마지막 세트에 2~3회 여유가 남는 무게입니다.</li>
       <li>2일차 데드는 작업 무게의 87.5%로 가볍게 합니다. 다음 날 스쿼트에 허리 피로가 넘어가지 않게 하고, 5일차를 메인으로 씁니다.</li>
       <li>4주차 판정: 5×5 종목은 8회, 데드·OHP는 6회 이상이면 성공입니다(처방 횟수 + 3회 = 3회 여유가 있었다는 뜻).</li>
@@ -258,7 +258,7 @@ const LIB = {
 
 // ---- 5일 구성 ----
 const DAYS = ["Day 1","Day 2","Day 3","Day 4","Day 5"];
-// pct: 작업 무게 대비 비율 (생략 시 1). deload: 4주차 테스트일이 아닐 때 처방
+// pct: 작업 무게 대비 비율 (생략 시 1). sets·reps: 그날만 다른 처방 (생략 시 LIFT_RULE). deload: 4주차 테스트일이 아닐 때 처방
 const DAY_PLAN = {
   "Day 1":{title:"벤치 + 가슴·팔", main:[{lift:"benchPress",cat:"메인"}],
     acc:[["머신 인클라인 프레스",3],["인클라인 덤벨컬",3],["바벨컬",3],["케이블 오버헤드 익스텐션",3],["케이블 푸쉬다운",3]]},
@@ -268,7 +268,7 @@ const DAY_PLAN = {
     acc:[["레그 익스텐션",2],["핵스쿼트",3],["레그프레스",2],["레그컬",4]]},
   "Day 4":{title:"벤치 + 가슴·팔", main:[{lift:"benchPress",cat:"메인",deload:{sets:3,reps:5,pct:0.8}}],
     acc:[["인클라인 덤벨프레스",3],["인클라인 플라이",3],["인클라인 덤벨컬",3],["머신 이두컬",3],["케이블 오버헤드 익스텐션",3],["케이블 푸쉬다운",3]]},
-  "Day 5":{title:"데드리프트 + OHP + 등·어깨", main:[{lift:"deadlift",cat:"메인"},{lift:"overheadPress",cat:"메인"}],
+  "Day 5":{title:"데드리프트 + OHP + 등·어깨", main:[{lift:"deadlift",cat:"메인"},{lift:"overheadPress",cat:"메인",sets:3,reps:5,pct:0.95}],
     acc:[["머신 티바로우",3],["머신 시티드로우",3],["머신 풀다운",3],["머신 숄더프레스",2]]},
 };
 // 4주차 테스트일: 그 종목을 작업 무게 AMRAP 1세트로 교체. 나머지 4대운동은 deload가 있으면 디로드, 없으면 생략
@@ -293,8 +293,8 @@ function buildItems(week, day){
       }
       return;
     }
-    const light = !!m.pct;
-    items.push({kind:"main", cat:m.cat, lift:m.lift, exercise:LIFT_LABEL[m.lift], sets:rule.sets, reps:String(rule.reps), pct:m.pct||1, rir:light?"3-4":"2-3", rest:light?"2-3분":"3-5분"});
+    const light = m.cat==="세컨더리";
+    items.push({kind:"main", cat:m.cat, lift:m.lift, exercise:LIFT_LABEL[m.lift], sets:m.sets||rule.sets, reps:String(m.reps||rule.reps), pct:m.pct||1, rir:light?"3-4":"2-3", rest:light?"2-3분":"3-5분"});
   });
   plan.acc.forEach(([name,sets],slot)=>{
     items.push({kind:"acc", cat:week===4?"디로드":"머신", slot, defaultExercise:name, sets: week===4 ? Math.max(1,Math.ceil(sets/2)) : sets});
